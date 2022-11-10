@@ -1,0 +1,36 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: alert-rules
+  namespace: monitoring
+  # add labels to peak these rules up by identifying
+  labels:
+    app: kube-prometheus-stack
+    release: monitoring
+spec:
+  route:
+    receiver: 'email'
+    repeatInterval: 30m
+    routes:
+    - matchers:
+      - name: alertname
+        value: HighCpuLoad
+      continue: true
+    - matchers:
+      - name: alertname
+        value: PodCrashLooping
+      repeatInterval: 10m
+  receivers:
+  - name: 'email'
+    emailConfigs:
+    - sendResolved: true
+      to: 'vaibhav.kumar@knoldus.com'
+      from: 'vaibhav.kumar@knoldus.com'
+      smarthost: 'smtp.gmail.com:587'
+      authUsername: 'vaibhav.kumar@knoldus.com'
+      authIdentity: 'vaibhav.kumar@knoldus.com'
+      authPassword:
+        name: gmail-auth
+        key: password
+
+
